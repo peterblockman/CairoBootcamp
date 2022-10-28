@@ -31,6 +31,8 @@ func sum_even{bitwise_ptr: BitwiseBuiltin*}(arr_len: felt, arr: felt*, run: felt
     local nrun: felt;
     if (xor == val + 1) {
         nrun = run + val;
+    } else {
+        nrun = run;
     }
     sum_even(arr_len - 1, arr + 1, nrun, nidx);
     return (nrun,);
