@@ -6,34 +6,34 @@ from exercises.programs.ex1 import log_value
 func sum_even{bitwise_ptr: BitwiseBuiltin*}(arr_len: felt, arr: felt*, run: felt, idx: felt) -> (
     sum: felt
 ) {
-    alloc_locals;
-
     %{
         # Debug
         print(
             f'Begin idx: {ids.idx} run: {ids.run}, len: {ids.arr_len} '
         )
     %}
-    if (arr_len == 0) {
-        return (sum=0);
+    if (arr_len == idx) {
+        return (run,);
     }
-    local val = arr[idx];
-    let (local xor) = bitwise_xor(val, 1);
-
-    local nidx: felt = idx + 1;
-
+    let val = arr[idx];
+    let (xor) = bitwise_xor(val, 1);
+    let nidx: felt = idx + 1;
     %{
         # Debug
         print(
-            f'nidx: {ids.nidx} xor: {ids.xor}, val: {ids.val} '
+            f'nidx: {ids.nidx}, val: {ids.val},  xor: {ids.xor}'
         )
     %}
-    local nrun: felt;
+    %{
+        # Debug
+        print(
+            f'----------------------'
+        )
+    %}
     if (xor == val + 1) {
-        nrun = run + val;
+        let nrun = run + val;
+        return sum_even(arr_len, arr, nrun, nidx);
     } else {
-        nrun = run;
+        return sum_even(arr_len, arr, run, nidx);
     }
-    sum_even(arr_len - 1, arr + 1, nrun, nidx);
-    return (nrun,);
 }
