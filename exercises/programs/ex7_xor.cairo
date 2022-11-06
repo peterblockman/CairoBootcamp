@@ -13,6 +13,12 @@ from exercises.programs.ex1 import log_value
 // 000000101010101 PASS
 // 010101010101011 FAIL
 
+func check_broken_chain{range_check_ptr}(remainder: felt, exp: felt) -> felt {
+    if (remainder == exp) {
+        return 1;
+    }
+    return 0;
+}
 func pattern{bitwise_ptr: BitwiseBuiltin*, range_check_ptr}(
     n: felt, idx: felt, exp: felt, broken_chain: felt
 ) -> (true: felt) {
@@ -54,8 +60,9 @@ func pattern{bitwise_ptr: BitwiseBuiltin*, range_check_ptr}(
     // 1 xor 0 = 1 => broken_chain = 1 - 1 = 0 => ok
     // 1 xor 1 = 0 => broken_chain = 1 - 0 = 1 => broken
     let (remainder_xor_prev_remainder) = bitwise_xor(remainder, exp);
+    let _broken_chain = check_broken_chain(remainder, exp);
 
-    let _broken_chain = 1 - remainder_xor_prev_remainder;
-    %{ print(f"n: {ids.n}, quotient: {ids.quotient}, remainder: {ids.remainder}, x_xor_y: {ids.remainder_xor_prev_remainder}, _broken_chain: {ids._broken_chain}") %}
+    // let _broken_chain = 1 - remainder_xor_prev_remainder;
+    %{ print(f"n: {ids.n}, quotient: {ids.quotient}, remainder: {ids.remainder}, remainder_xor_prev_remainder: {ids.remainder_xor_prev_remainder}, _broken_chain: {ids._broken_chain}") %}
     return pattern(quotient, new_idx, remainder, _broken_chain);
 }
