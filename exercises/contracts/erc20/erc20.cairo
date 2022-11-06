@@ -5,6 +5,7 @@ from starkware.cairo.common.uint256 import (
     uint256_le,
     uint256_unsigned_div_rem,
     uint256_sub,
+    uint256_eq,
 )
 from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.math import unsigned_div_rem, assert_le_felt
@@ -40,6 +41,18 @@ func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
 
 // Storage
 //#########################################################################################
+// Define a storage variable.
+@storage_var
+func admin() -> (admin: felt) {
+}
+
+@storage_var
+func allowed_v(account: felt) -> (allowed_v: felt) {
+}
+
+@storage_var
+func level_granted() -> (level_granted: felt) {
+}
 
 // View functions
 //#########################################################################################
@@ -102,6 +115,13 @@ func allowance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
 func transfer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     recipient: felt, amount: Uint256
 ) -> (success: felt) {
+    let two_as_uint256 = Uint256(0, 2);
+
+    let (_, remainder) = uint256_unsigned_div_rem(amount, two_as_uint256);
+
+    let zero_as_uint256 = Uint256(0, 0);
+    let (eq) = uint256_eq(remainder, zero_as_uint256);
+    assert eq = 1;
     ERC20_transfer(recipient, amount);
     return (1,);
 }
@@ -142,4 +162,3 @@ func exclusive_faucet{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_chec
 ) -> (success: felt) {
     return (success=1);
 }
-
