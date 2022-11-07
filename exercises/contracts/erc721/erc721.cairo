@@ -21,6 +21,14 @@ func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     return ();
 }
 
+@storage_var
+func counter() -> (token_id: Uint256) {
+}
+
+@storage_var
+func og_owner(tokenId: Uint256) -> (og_owner: felt) {
+}
+
 //
 // Getters
 //
@@ -91,6 +99,24 @@ func owner{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() ->
     return (owner,);
 }
 
+@view
+func getCounter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (
+    counter: Uint256
+) {
+    let (current_counter) = counter.read();
+
+    return (current_counter,);
+}
+
+@view
+func getOriginalOwner{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    tokenId: Uint256
+) -> (og_owner: felt) {
+    let (_og_owner) = og_owner.read(tokenId);
+
+    return (_og_owner,);
+}
+
 //
 // Externals
 //
@@ -128,10 +154,16 @@ func safeTransferFrom{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_chec
 }
 
 @external
-func mint{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(to: felt, new_token_id: Uint256) {
+func mint{pedersen_ptr: HashBuiltin*, syscall_ptr: felt*, range_check_ptr}(to: felt) {
     Ownable.assert_only_owner();
-
+    let (new_token_id) = counter.read();
     ERC721._mint(to, new_token_id);
+    let (next_token_id, _) = uint256_add(new_token_id, Uint256(1, 0));
+    counter.write(next_token_id);
+
+    // origin owner
+    og_owner.write(new_token_id, to);
+
     return ();
 }
 
