@@ -30,7 +30,10 @@ func test_even_transfer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_ch
     alloc_locals;
 
     tempvar contract_address;
-    %{ ids.contract_address = context.contract_a_address %}
+    %{
+        ids.contract_address = context.contract_a_address 
+        # print(f"ids.contract_address :{ids.contract_address}")
+    %}
 
     // Call as admin
     %{ stop_prank_callable = start_prank(ids.MINT_ADMIN, ids.contract_address) %}
@@ -109,6 +112,8 @@ func test_burn_haircut{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_che
 
     // Assert user's balance decreased by 500
     let (user_diff) = uint256_sub(start_user_balance, final_user_balance);
+    %{ print("final_user_balance: ",ids.user_diff.low) %}
+
     assert user_diff.low = 500;
 
     // Final admin balance
