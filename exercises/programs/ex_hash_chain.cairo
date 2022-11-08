@@ -16,6 +16,5 @@ func hash_chain{hash_ptr: HashBuiltin*}(arr_ptr: felt*, arr_len: felt) -> (resul
     // arr_len = 3, h12 <+> arr_ptr + 2 => h123
     // arr_len = 4, h123 <+> arr_ptr + 3 => h1234
 
-    let result = hash2(hash, [arr_ptr + arr_len - 1]);
-    return (result);
+    return hash2(hash, [arr_ptr + arr_len - 1]);
 }
