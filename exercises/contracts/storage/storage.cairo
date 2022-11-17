@@ -3,11 +3,11 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from openzeppelin.access.ownable.library import Ownable
+// from openzeppelin.access.ownable.library import Ownable
 
 @constructor
 func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
-    Ownable.initializer(owner);
+    // Ownable.initializer(owner);
     return ();
 }
 
@@ -26,7 +26,7 @@ func get_balance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
 // Sets the balance to amount
 @external
 func set_balance{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(amount: felt) {
-    Ownable.assert_only_owner();
+    // Ownable.assert_only_owner();
     balance.write(amount);
     return ();
 }
